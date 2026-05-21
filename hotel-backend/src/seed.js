@@ -32,12 +32,13 @@ const seed = async () => {
   const vtLeTan        = vaiTros.find(v => v.ten_vaitro === 'le_tan');
   const vtHousekeeping = vaiTros.find(v => v.ten_vaitro === 'housekeeping');
   const vtIT           = vaiTros.find(v => v.ten_vaitro === 'it');
+  const vtKhachHang     = vaiTros.find(v => v.ten_vaitro === 'khach_hang');
   console.log('Created vai tro');
 
   // ── Tài khoản ────────────────────────────────
   const nguoiDungs = await NguoiDung.insertMany([
     { ho_ten: 'Admin Hotel',  email: 'admin@hotel.com',  mat_khau: await bcrypt.hash('123456', 10), id_vaitro: vtAdmin._id },
-    { ho_ten: 'John Smith',   email: 'john@hotel.com',   mat_khau: await bcrypt.hash('123456', 10), id_vaitro: vtAdmin._id },
+    { ho_ten: 'John Smith',   email: 'john@hotel.com',   mat_khau: await bcrypt.hash('123456', 10), id_vaitro: vtKhachHang._id },
     { ho_ten: 'Anna Lee',     email: 'anna@hotel.com',   mat_khau: await bcrypt.hash('123456', 10), id_vaitro: vtLeTan._id },
     { ho_ten: 'Mike Tran',    email: 'mike@hotel.com',   mat_khau: await bcrypt.hash('123456', 10), id_vaitro: vtHousekeeping._id },
     { ho_ten: 'Steve Nguyen', email: 'steve@hotel.com',  mat_khau: await bcrypt.hash('123456', 10), id_vaitro: vtLeTan._id },

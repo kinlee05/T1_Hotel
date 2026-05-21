@@ -44,8 +44,16 @@ export default function RoomDetailPage({ room, setPage }) {
   const nights = calcNights(checkIn, checkOut);
   const total = room.price * nights;
 
+  if (!room) {
+  return (
+    <div style={{ padding: "120px 80px", textAlign: "center", color: "#8A8070" }}>
+      <p>Không tìm thấy phòng.</p>
+      <GoldBtn onClick={() => setPage("rooms")} style={{ marginTop: 20 }}>Quay lại</GoldBtn>
+    </div>
+  );
+}
   // Extra images (reuse same image slightly varied)
-  const images = [room.img, room.img.replace("w=800", "w=801"), room.img.replace("w=800", "w=802")];
+  const images = [room.img, room.img?.replace("w=800", "w=801"), room.img?.replace("w=800", "w=802")];
 
   const inp = {
     width: "100%",
@@ -165,7 +173,7 @@ export default function RoomDetailPage({ room, setPage }) {
           {/* Amenities */}
           <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 18, color: "#1a1208", marginBottom: 14 }}>Amenities</h3>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 32 }}>
-            {room.amenities.map((a) => (
+            {room.amenities?.map((a) => (
               <div key={a} style={{ display: "flex", alignItems: "center", gap: 7, background: "#fff", border: "1px solid #e0d8cc", borderRadius: 20, padding: "6px 14px", fontSize: 13, color: "#3a2e20" }}>
                 <span>{AMENITY_ICONS[a] || "✓"}</span>
                 <span>{a}</span>
@@ -176,7 +184,7 @@ export default function RoomDetailPage({ room, setPage }) {
           {/* Highlights */}
           <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 18, color: "#1a1208", marginBottom: 14 }}>Room Highlights</h3>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 32px" }}>
-            {room.highlights.map((h, i) => (
+            {room.highlights?.map((h, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#5a4e40", padding: "6px 0", borderBottom: "1px solid #ede6da" }}>
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#C9A84C", flexShrink: 0 }} />
                 {h}

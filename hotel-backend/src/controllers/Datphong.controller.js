@@ -45,39 +45,53 @@ exports.chiTiet = async (req, res) => {
 };
 
 // POST /api/admin/dat-phong
+// Đặt phòng = thanh toán luôn → tạo ThanhToan ngay
 exports.taoMoi = async (req, res) => {
   try {
-    const { id_khachhang, id_phong, ngay_checkin, ngay_checkout, yeu_cau_dac_biet } = req.body;
+    const { id_khachhang, id_phong, ngay_checkin, ngay_checkout, yeu_cau_dac_biet, phuong_thuc = 'cash' } = req.body;
 
-    // Kiểm tra phòng còn trống không
     const phong = await Phong.findById(id_phong);
     if (!phong) return res.status(404).json({ message: 'Không tìm thấy phòng' });
     if (phong.trang_thai !== 'available') {
       return res.status(400).json({ message: 'Phòng không còn trống' });
     }
 
-    // Tính tổng tiền
-    const checkin = new Date(ngay_checkin);
+    const checkin  = new Date(ngay_checkin);
     const checkout = new Date(ngay_checkout);
-    const soNgay = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+    const soNgay   = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
     const tong_tien = soNgay * phong.gia_moi_dem;
 
-    // Sinh mã đặt phòng
-    const lastDP = await DatPhong.findOne().sort({ createdAt: -1 });
+    // Sinh mã không trùng
+    const lastDP = await DatPhong.findOne().sort({ ma_datphong: -1 });
     let soThu = 1;
     if (lastDP?.ma_datphong) {
-      soThu = parseInt(lastDP.ma_datphong.replace('B', '')) + 1;
+      const parsed = parseInt(lastDP.ma_datphong.replace('B', ''));
+      if (!isNaN(parsed)) soThu = parsed + 1;
     }
-    const ma_datphong = `B${String(soThu).padStart(3, '0')}`;
+    let ma_datphong = `B${String(soThu).padStart(3, '0')}`;
+    while (await DatPhong.findOne({ ma_datphong })) {
+      soThu++;
+      ma_datphong = `B${String(soThu).padStart(3, '0')}`;
+    }
 
+    // Tạo đặt phòng — bắt đầu ở confirmed vì đã trả tiền
     const dp = await DatPhong.create({
       ma_datphong, id_khachhang, id_phong,
       ngay_checkin, ngay_checkout,
       tong_tien, yeu_cau_dac_biet,
-      trang_thai: 'pending',
+      trang_thai: 'confirmed',
     });
 
-    res.status(201).json({ message: 'Tạo đặt phòng thành công', data: dp });
+    // Tạo thanh toán ngay
+    const tt = await ThanhToan.create({
+      id_datphong:    dp._id,
+      so_tien:        tong_tien,
+      phuong_thuc,
+      trang_thai:     'paid',
+      ngay_thanhtoan: new Date(),
+    });
+
+    res.status(201).json({ message: 'Đặt phòng và thanh toán thành công', data: dp, thanh_toan: tt });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -100,7 +114,7 @@ exports.capNhat = async (req, res) => {
   }
 };
 
-// PATCH /api/admin/dat-phong/:id/xac-nhan
+// PATCH /api/admin/dat-phong/:id/xac-nhan  (giữ nguyên phòng trường hợp cần dùng thủ công)
 exports.xacNhan = async (req, res) => {
   try {
     const dp = await DatPhong.findByIdAndUpdate(
@@ -127,14 +141,20 @@ exports.huy = async (req, res) => {
     dp.trang_thai = 'cancelled';
     await dp.save();
 
-    // Trả phòng về trạng thái available
     await Phong.findByIdAndUpdate(dp.id_phong, { trang_thai: 'available' });
+
+    // Đánh dấu thanh toán là refunded nếu có
+    await ThanhToan.findOneAndUpdate(
+      { id_datphong: dp._id, trang_thai: 'paid' },
+      { trang_thai: 'refunded' }
+    );
 
     res.json({ message: 'Hủy đặt phòng thành công' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 // PATCH /api/admin/dat-phong/:id/checkin
 exports.checkIn = async (req, res) => {
   try {
@@ -146,7 +166,6 @@ exports.checkIn = async (req, res) => {
     dp.trang_thai = 'checked_in';
     await dp.save();
 
-    // Cập nhật trạng thái phòng → occupied
     await Phong.findByIdAndUpdate(dp.id_phong, { trang_thai: 'occupied' });
 
     res.json({ message: 'Check-in thành công', data: dp });
@@ -156,10 +175,9 @@ exports.checkIn = async (req, res) => {
 };
 
 // PATCH /api/admin/dat-phong/:id/checkout
+// Chỉ trả phòng — tiền đã thu từ lúc đặt
 exports.checkOut = async (req, res) => {
   try {
-    const { phuong_thuc = 'cash' } = req.body;
-
     const dp = await DatPhong.findById(req.params.id);
     if (!dp) return res.status(404).json({ message: 'Không tìm thấy đặt phòng' });
     if (dp.trang_thai !== 'checked_in')
@@ -168,19 +186,9 @@ exports.checkOut = async (req, res) => {
     dp.trang_thai = 'checked_out';
     await dp.save();
 
-    // Trả phòng về available
     await Phong.findByIdAndUpdate(dp.id_phong, { trang_thai: 'available' });
 
-    // ← Tạo ThanhToan → đây là nơi lưu doanh thu thật
-    const tt = await ThanhToan.create({
-      id_datphong:    dp._id,
-      so_tien:        dp.tong_tien,
-      phuong_thuc,
-      trang_thai:     'paid',
-      ngay_thanhtoan: new Date(),
-    });
-
-    res.json({ message: 'Check-out thành công', data: dp, thanh_toan: tt });
+    res.json({ message: 'Check-out thành công', data: dp });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

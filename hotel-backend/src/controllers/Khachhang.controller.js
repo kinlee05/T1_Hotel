@@ -51,7 +51,7 @@ exports.taoMoi = async (req, res) => {
     const { ho_ten, email, sdt, ngay_sinh, quoc_tich, gioi_tinh, so_cmnd_passport, dia_chi, ghi_chu } = req.body;
 
     // Tự sinh mã khách hàng
-    const lastKH = await KhachHang.findOne().sort({ createdAt: -1 });
+    const lastKH = await KhachHang.findOne({ ma_khachhang: { $regex: /^C\d+$/ } }).sort({ ma_khachhang: -1 });
     let soThu = 1;
     if (lastKH?.ma_khachhang) {
       soThu = parseInt(lastKH.ma_khachhang.replace('C', '')) + 1;
@@ -89,7 +89,7 @@ exports.capNhat = async (req, res) => {
 exports.xoa = async (req, res) => {
   try {
     await KhachHang.findByIdAndUpdate(req.params.id, { trang_thai: 'inactive' });
-    res.json({ message: 'Đã vô hiệu hóa khách hàng' });
+res.json({ message: 'Đã vô hiệu hóa khách hàng' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

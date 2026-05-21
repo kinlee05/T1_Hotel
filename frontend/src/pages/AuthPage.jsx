@@ -23,7 +23,6 @@ export default function AuthPage({ initialMode = 'login', setPage }) {
     border: '1px solid #d1d5db', borderRadius: 12,
     fontSize: 15, outline: 'none', marginTop: 8, background: '#fff',color: '#111',
     fontFamily: 'inherit',
-    
   };
   const btnStyle = {
     width: '100%', padding: '15px',
@@ -52,7 +51,15 @@ export default function AuthPage({ initialMode = 'login', setPage }) {
     setLoading(true);
     try {
       if (isLogin) {
-        await login(form.email, form.mat_khau);
+        const loggedUser = await login(form.email, form.mat_khau);
+        // Redirect theo vai_tro
+        const rolePageMap = {
+          admin: 'admin', le_tan: 'leitan',
+          housekeeping: 'housekeeping', ke_toan: 'ketoan',
+          it: 'it', khach_hang: 'home',
+        };
+        setPage(rolePageMap[loggedUser?.vai_tro] || 'home');
+        return;
       } else {
         await register({
           ho_ten:    form.ho_ten,
