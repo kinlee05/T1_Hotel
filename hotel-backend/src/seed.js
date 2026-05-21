@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 require('dotenv').config();
+const DanhGia = require('./models/DanhGia.model');
+const DichVu  = require('./models/DichVu.model');
 
 const VaiTro    = require('./models/VaiTro.model');
 const NguoiDung = require('./models/NguoiDung.model');
@@ -17,6 +19,7 @@ const seed = async () => {
   await Promise.all([
     VaiTro.deleteMany(), NguoiDung.deleteMany(), NhanVien.deleteMany(),
     KhachHang.deleteMany(), Phong.deleteMany(), DatPhong.deleteMany(), ThanhToan.deleteMany(),
+    DanhGia.deleteMany(), DichVu.deleteMany(),
   ]);
   console.log('Cleared old data');
 
@@ -158,6 +161,25 @@ const seed = async () => {
     tt(22, 180, 'cash',     new Date(mo(5).getFullYear(), mo(5).getMonth(), 14)),
   ]);
   console.log('Created thanh toan');
+
+  // ── Dịch vụ ──────────────────────────────────
+await DichVu.insertMany([
+  { ten_dichvu: 'Bữa sáng buffet',      gia: 250000, don_vi: 'người/ngày', loai: 'breakfast', icon: '☕', trang_thai: 'active' },
+  { ten_dichvu: 'Xe đưa đón sân bay',   gia: 450000, don_vi: 'lượt',       loai: 'airport',   icon: '🚐', trang_thai: 'active' },
+  { ten_dichvu: 'Gói Spa thư giãn',     gia: 800000, don_vi: 'người',      loai: 'spa',       icon: '💆', trang_thai: 'active' },
+  { ten_dichvu: 'Bữa tối lãng mạn',    gia: 650000, don_vi: '2 người',    loai: 'other',     icon: '🍷', trang_thai: 'active' },
+  { ten_dichvu: 'Giặt là',              gia: 100000, don_vi: 'kg',         loai: 'laundry',   icon: '👕', trang_thai: 'active' },
+]);
+console.log('Created dich vu');
+
+// ── Đánh giá mẫu (chỉ cho các booking đã checked_out) ──
+// datPhongs[6] = B007, datPhongs[7] = B008, datPhongs[8] = B009
+await DanhGia.insertMany([
+  { id_datphong: datPhongs[6]._id, id_khachhang: khachHangs[6]._id, id_phong: phongs.find(p => p.so_phong === '102')._id, diem_so: 5, noi_dung: 'Phòng rất sạch sẽ, nhân viên nhiệt tình!', trang_thai: 'approved' },
+  { id_datphong: datPhongs[7]._id, id_khachhang: khachHangs[7]._id, id_phong: phongs.find(p => p.so_phong === '301')._id, diem_so: 4, noi_dung: 'View đẹp, bữa sáng ngon. Sẽ quay lại.', trang_thai: 'approved' },
+  { id_datphong: datPhongs[8]._id, id_khachhang: khachHangs[8]._id, id_phong: phongs.find(p => p.so_phong === '201')._id, diem_so: 4, noi_dung: 'Dịch vụ tốt, giá hợp lý.', trang_thai: 'pending'  },
+]);
+console.log('Created danh gia');
 
   console.log('\n✅ Seed xong!');
   console.log('   Admin:  admin@hotel.com / 123456');

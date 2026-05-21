@@ -17,7 +17,8 @@ app.use('/api/admin', require('./routes/Admin.routes'));
 // app.use('/api/le-tan',       require('./routes/leitan.routes'));
 // app.use('/api/housekeeping', require('./routes/housekeeping.routes'));
 // app.use('/api/ke-toan',      require('./routes/ketoan.routes'));
-
+app.use('/api/public',    require('./routes/Public.routes'));
+app.use('/api/customer',  require('./routes/Customer.routes'));
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Server running on port ${process.env.PORT || 3000}`);
 });
