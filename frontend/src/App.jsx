@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
 import AuthPage from "./pages/AuthPage";
 import RoomsPage from "./pages/RoomPage";
@@ -49,8 +50,11 @@ export default function App() {
     }
   };
 
+  const noFooterPages = ["login", "register"];
+  const showFooter = !noFooterPages.includes(page);
+
   return (
-    <div style={{ minHeight: "100vh", background: "#0A0A0A" }}>
+    <div style={{ minHeight: "100vh", background: "#0A0A0A", display: "flex", flexDirection: "column" }}>
       {showNav && (
         <Navbar
           page={page}
@@ -60,9 +64,10 @@ export default function App() {
           onLogout={handleLogout}
         />
       )}
-      <div style={{ paddingTop: showNav ? 68 : 0 }}>
+      <div style={{ paddingTop: showNav ? 68 : 0, flex: 1 }}>
         {renderPage()}
       </div>
+      {showFooter && <Footer setPage={setPage} />}
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { S, fmt, calcNights } from "../styles/theme";
 import GoldBtn from "../components/shared/GoldBtn";
-import Footer from "../components/Footer";
 
 function StarRating({ rating, size = 16 }) {
   return (
@@ -271,10 +270,6 @@ export default function RoomDetailPage({ room, setPage }) {
             </p>
           </div>
         </div>
-      </div>
-
-      <div style={{ background: "#050505" }}>
-        <Footer />
       </div>
     </div>
   );

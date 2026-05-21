@@ -2,7 +2,7 @@ import { useState } from "react";
 import { S, fmt } from "../styles/theme";
 import { ROOMS } from "../data/constants";
 import GoldBtn from "../components/shared/GoldBtn";
-import Footer from "../components/Footer";
+
 
 function StarRating({ rating }) {
   return (
@@ -71,9 +71,6 @@ export default function RoomsPage({ setPage, setSelectedRoom }) {
         ))}
       </div>
 
-      <div style={{ background: "#050505" }}>
-        <Footer />
-      </div>
     </div>
   );
 }
@@ -183,44 +180,23 @@ function RoomCard({ room, setPage, setSelectedRoom }) {
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: 10 }}>
-            <button
-              onClick={() => { setSelectedRoom(room); setPage("room-detail"); }}
-              style={{
-                padding: "9px 20px",
-                background: "transparent",
-                border: "1.5px solid #C9A84C",
-                color: "#C9A84C",
-                borderRadius: 6,
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
-                fontFamily: "inherit",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = "rgba(201,168,76,0.08)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
-            >
-              View
-            </button>
-            <button
-              onClick={() => { setSelectedRoom(room); setPage("room-detail"); }}
-              style={{
-                padding: "9px 22px",
-                background: "linear-gradient(135deg, #C9A84C, #E8C97A, #C9A84C)",
-                border: "none",
-                color: "#1a0e00",
-                borderRadius: 6,
-                fontSize: 13,
-                fontWeight: 700,
-                cursor: "pointer",
-                fontFamily: "inherit",
-                letterSpacing: "0.04em",
-              }}
-            >
-              Book now
-            </button>
-          </div>
+          <button
+            onClick={() => { setSelectedRoom(room); setPage("room-detail"); }}
+            style={{
+              padding: "9px 28px",
+              background: "linear-gradient(135deg, #C9A84C, #E8C97A, #C9A84C)",
+              border: "none",
+              color: "#1a0e00",
+              borderRadius: 6,
+              fontSize: 13,
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: "inherit",
+              letterSpacing: "0.04em",
+            }}
+          >
+            Book now
+          </button>
         </div>
       </div>
     </div>
