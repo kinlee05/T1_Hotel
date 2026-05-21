@@ -21,8 +21,9 @@ export default function AuthPage({ initialMode = 'login', setPage }) {
   const inputStyle = {
     width: '100%', padding: '15px 18px',
     border: '1px solid #d1d5db', borderRadius: 12,
-    fontSize: 15, outline: 'none', marginTop: 8, background: '#fff',
+    fontSize: 15, outline: 'none', marginTop: 8, background: '#fff',color: '#111',
     fontFamily: 'inherit',
+    
   };
   const btnStyle = {
     width: '100%', padding: '15px',
