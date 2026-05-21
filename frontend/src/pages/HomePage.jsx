@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { S, fmt, fmtD } from "../styles/theme";
+import { S, fmt } from "../styles/theme";
 import { ROOMS } from "../data/constants";
 import GoldBtn from "../components/shared/GoldBtn";
 import Stars from "../components/shared/Stars";
 import { Hr } from "../components/shared/ui";
 
-export default function HomePage({ setPage, setSearch }) {
+export default function HomePage({ setPage, setSearch, setSelectedRoom }) {
   const [checkIn, setCheckIn]   = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests]     = useState(2);
@@ -59,7 +59,7 @@ export default function HomePage({ setPage, setSearch }) {
               <select value={roomType} onChange={e => setRoomType(e.target.value)} style={inp}>
                 <option value="all">Tất cả</option>
                 <option value="Standard">Standard</option>
-                <option value="Superior">Superior</option>
+                <option value="Family">Family</option>
                 <option value="Deluxe">Deluxe</option>
                 <option value="Suite">Suite</option>
               </select>
@@ -92,7 +92,7 @@ export default function HomePage({ setPage, setSearch }) {
               style={{ background: S.darkCard, border: `1px solid ${S.border}`, borderRadius: 8, overflow: "hidden", cursor: "pointer", transition: "all 0.3s" }}
               onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-6px)"; e.currentTarget.style.borderColor = S.gold; }}
               onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = S.border; }}
-              onClick={() => setPage("rooms")}
+              onClick={() => { setSelectedRoom(room); setPage("room-detail"); }}
             >
               <div style={{ height: 220, overflow: "hidden", position: "relative" }}>
                 <img src={room.img} alt={room.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -103,19 +103,19 @@ export default function HomePage({ setPage, setSearch }) {
                 <Stars rating={room.rating} />
                 <span style={{ fontSize: 12, color: S.muted, marginLeft: 6 }}>({room.reviews})</span>
                 <div style={{ display: "flex", gap: 14, marginTop: 10, fontSize: 12, color: S.muted }}>
-                  <span>🛏 {room.beds} giường</span>
-                  <span>👤 {room.guests} khách</span>
+                  <span>🛏 {room.bedType}</span>
+                  <span>👤 {room.guests} guests</span>
                   <span>📐 {room.area}m²</span>
                 </div>
                 <Hr />
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div>
-                    <div style={{ fontSize: 11, color: S.muted, textDecoration: "line-through" }}>{fmt(room.originalPrice)}</div>
+                    <div style={{ fontSize: 11, color: S.muted, textDecoration: "line-through" }}>${Math.round(room.price * 1.2)}/night</div>
                     <div style={{ color: S.gold, fontWeight: 700, fontSize: 22 }}>
-                      {fmt(room.price)}<span style={{ fontSize: 12, color: S.muted, fontWeight: 400 }}>/đêm</span>
+                      ${room.price}<span style={{ fontSize: 12, color: S.muted, fontWeight: 400 }}>/night</span>
                     </div>
                   </div>
-                  <GoldBtn small>Xem ngay</GoldBtn>
+                  <GoldBtn small>View Room</GoldBtn>
                 </div>
               </div>
             </div>
@@ -138,27 +138,6 @@ export default function HomePage({ setPage, setSearch }) {
               <p style={{ fontSize: 13, color: S.muted, lineHeight: 1.6 }}>{d}</p>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* ── Footer ── */}
-      <div style={{ padding: "44px 80px", background: "#050505", borderTop: `1px solid ${S.border}`, display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 36 }}>
-        <div>
-          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: S.gold, letterSpacing: 3, marginBottom: 10 }}>T1 HOTEL</div>
-          <p style={{ color: S.muted, fontSize: 13, lineHeight: 1.7, maxWidth: 220 }}>Khách sạn 5 sao hàng đầu, mang đến trải nghiệm lưu trú đẳng cấp tại trung tâm thành phố.</p>
-        </div>
-        {[
-          ["Khám phá", ["Phòng & Suite","Nhà hàng","Spa","Hội nghị"]],
-          ["Hỗ trợ",   ["Đặt phòng","Chính sách","FAQ","Liên hệ"]],
-          ["Liên hệ",  ["📍 123 Nguyễn Huệ, Q.1","📞 1800 9999","✉ info@t1hotel.vn"]],
-        ].map(([h, items]) => (
-          <div key={h}>
-            <h4 style={{ fontSize: 11, letterSpacing: 4, color: S.gold, textTransform: "uppercase", marginBottom: 16 }}>{h}</h4>
-            {items.map(i => <div key={i} style={{ fontSize: 13, color: S.muted, marginBottom: 8 }}>{i}</div>)}
-          </div>
-        ))}
-        <div style={{ gridColumn: "1/-1", borderTop: `1px solid ${S.border}`, paddingTop: 20, textAlign: "center", color: S.muted, fontSize: 12 }}>
-          © 2025 T1 Hotel. All rights reserved.
         </div>
       </div>
     </div>

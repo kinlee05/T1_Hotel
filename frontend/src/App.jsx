@@ -2,13 +2,16 @@ import { useState } from "react";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import AuthPage from "./pages/AuthPage";
+import RoomsPage from "./pages/RoomPage";
+import RoomDetailPage from "./pages/RoomDetailPage";
 import { DEMO_USER } from "./data/constants";
 
 export default function App() {
-  const [page, setPage]       = useState("home");
-  const [user, setUser]       = useState(null);
-  const [cart, setCart]       = useState([]);
-  const [search, setSearch]   = useState({});
+  const [page, setPage]                 = useState("home");
+  const [user, setUser]                 = useState(null);
+  const [cart, setCart]                 = useState([]);
+  const [search, setSearch]             = useState({});
+  const [selectedRoom, setSelectedRoom] = useState(null);
 
   const cartCount = cart.length;
 
@@ -28,7 +31,11 @@ export default function App() {
   const renderPage = () => {
     switch (page) {
       case "home":
-        return <HomePage setPage={setPage} setSearch={setSearch} />;
+        return <HomePage setPage={setPage} setSearch={setSearch} setSelectedRoom={setSelectedRoom} />;
+      case "rooms":
+        return <RoomsPage setPage={setPage} setSelectedRoom={setSelectedRoom} />;
+      case "room-detail":
+        return <RoomDetailPage room={selectedRoom} setPage={setPage} />;
       case "login":
       case "register":
         return <AuthPage onLogin={handleLogin} setPage={setPage} />;
