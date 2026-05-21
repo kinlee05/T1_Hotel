@@ -32,7 +32,7 @@ export default function HomePage({ setPage, setSearch }) {
         <div style={{ position: "relative", textAlign: "center", maxWidth: 860, padding: "0 40px" }}>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 13, letterSpacing: 8, color: S.gold, textTransform: "uppercase", marginBottom: 18 }}>Chào mừng đến với</p>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 88, fontWeight: 700, lineHeight: 0.95, marginBottom: 22, background: `linear-gradient(135deg, ${S.gold}, ${S.goldLight}, ${S.gold})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            GRAND<br />LUXURY
+            T1<br />HOTEL
           </h1>
           <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, color: "rgba(245,240,232,0.65)", marginBottom: 48, letterSpacing: 2, fontWeight: 300 }}>
             Nơi xa hoa hội tụ — Trải nghiệm đẳng cấp thế giới
@@ -144,13 +144,13 @@ export default function HomePage({ setPage, setSearch }) {
       {/* ── Footer ── */}
       <div style={{ padding: "44px 80px", background: "#050505", borderTop: `1px solid ${S.border}`, display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 36 }}>
         <div>
-          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: S.gold, letterSpacing: 3, marginBottom: 10 }}>GRAND LUXURY</div>
+          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, color: S.gold, letterSpacing: 3, marginBottom: 10 }}>T1 HOTEL</div>
           <p style={{ color: S.muted, fontSize: 13, lineHeight: 1.7, maxWidth: 220 }}>Khách sạn 5 sao hàng đầu, mang đến trải nghiệm lưu trú đẳng cấp tại trung tâm thành phố.</p>
         </div>
         {[
           ["Khám phá", ["Phòng & Suite","Nhà hàng","Spa","Hội nghị"]],
           ["Hỗ trợ",   ["Đặt phòng","Chính sách","FAQ","Liên hệ"]],
-          ["Liên hệ",  ["📍 123 Nguyễn Huệ, Q.1","📞 1800 9999","✉ info@grand.vn"]],
+          ["Liên hệ",  ["📍 123 Nguyễn Huệ, Q.1","📞 1800 9999","✉ info@t1hotel.vn"]],
         ].map(([h, items]) => (
           <div key={h}>
             <h4 style={{ fontSize: 11, letterSpacing: 4, color: S.gold, textTransform: "uppercase", marginBottom: 16 }}>{h}</h4>
@@ -158,7 +158,7 @@ export default function HomePage({ setPage, setSearch }) {
           </div>
         ))}
         <div style={{ gridColumn: "1/-1", borderTop: `1px solid ${S.border}`, paddingTop: 20, textAlign: "center", color: S.muted, fontSize: 12 }}>
-          © 2025 Grand Luxury Hotel. All rights reserved.
+          © 2025 T1 Hotel. All rights reserved.
         </div>
       </div>
     </div>
